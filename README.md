@@ -17,14 +17,17 @@
 
 ## Test Result Summary
 
+* 10x latency getting from USC to USE2 when the data size is small
+* 2x total throughput pushing from USC when the data size is big
+
 ### PUSH
 
 #### iPerf3 push
 
-| Test          | From  | Sender    | Receiver | reqs/s |
-|---------------|-------|-----------|----------|--------|
-| iperf3        | use2b | 933 MB/s  | 929 MB/s | N/A    |
-| iperf3        | usec  | 556 MB/s  | 552 MB/s | N/A    |
+| Test          | From  | Sender    | Receiver |
+|---------------|-------|-----------|----------|
+| iperf3        | use2b | 933 MB/s  | 929 MB/s |
+| iperf3        | usec  | 556 MB/s  | 552 MB/s |
 
 #### gRPC push
 
@@ -34,8 +37,14 @@
 | 4KB x 1000    | usc   | 900ms  |
 | 4KB x 2000    | use2b | 730ms  |
 | 4KB x 2000    | usc   | 1300ms |
-| 4KB x 4000    | use2b | 1520ms  |
+| 4KB x 4000    | use2b | 1520ms |
 | 4KB x 4000    | usc   | 2300ms |
+| 1MB x 100     | use2b | 9.1s   |
+| 1MB x 100     | usc   | 10.3   |
+| 1MB x 200     | use2b | 18.1s  |
+| 1MB x 200     | usc   | 23.7s  |
+| 1MB x 400     | use2b | 36.7s  |
+| 1MB x 400     | usc   | 54.4s  |
 
 ### HTTP GET over plain HTTP, HTTPS, mTLS
 
@@ -114,9 +123,16 @@ $ ./server
 2025/03/30 03:42:27 server listening at [::]:50051
 
 # client on use2b or usc
-./client -addr sokoide-use2.eastus2.cloudapp.azure.com:50051 -gos 1000
+$ ./client -addr sokoide-use2.eastus2.cloudapp.azure.com:50051 -gos 1000
 2025/03/30 03:36:32 Greeting: Hello defaultName
 2025/03/30 03:36:33 Push: 351 ms
+
+$ ./client -addr sokoide-use2.eastus2.cloudapp.azure.com:50051 -gos 100 -pushlen 1048576 -deadline 1m
+2025/03/30 04:19:41 deadline: 1m
+2025/03/30 04:19:41 Greeting: Hello defaultName
+2025/03/30 04:19:50 Push: 9054 ms
+
+
 ```
 
 ### HTTP GET over plain HTTP, HTTPS, mTLS
