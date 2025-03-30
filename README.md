@@ -2,12 +2,12 @@
 
 ## Environment
 
-* sokoide-use2
+* use2 (sokoide-use2.eastus2.cloudapp.azure.comj)
   * http server which returns X KB random string (configurable) in US East2
   * The http server is fronted by Traefik to add TLS/mTLS layer using <https://github.com/sokoide/tls-overhead>
-* sokoide-use2b
+* use2b (sokoide-use2b.eastus2.cloudapp.azure.com)
   * client in US East2
-* sokoide-usec
+* usc (sokoide-usc.centralus.cloudapp.azure.com)
   * another client in US Central
 
 ## Test Date
@@ -17,8 +17,8 @@
 
 ## Test Result Summary
 
-* 10x latency getting from USC to USE2 when the data size is small
-* 2x total throughput pushing from USC when the data size is big
+* 10x latency getting from USC to USE2 when the data size is small (<4KB)
+* 2x total throughput pushing from USC when the data size is big (1MB)
 
 ### PUSH
 
@@ -27,7 +27,7 @@
 | Test          | From  | Sender    | Receiver |
 |---------------|-------|-----------|----------|
 | iperf3        | use2b | 933 MB/s  | 929 MB/s |
-| iperf3        | usec  | 556 MB/s  | 552 MB/s |
+| iperf3        | usc   | 556 MB/s  | 552 MB/s |
 
 #### gRPC push
 
@@ -53,7 +53,7 @@
 | 4KB plain HTTP    | use2b | 103 MB/s          | 2.7 MB/s      | 24354  |
 | 4KB plain HTTP    | usc   | 12 MB/s           | 307 KB/s      | 2762   |
 | 4KB HTTPS         | use2b | 74 MB/s           | 1.5 MB/s      | 17672  |
-| 4KB HTTPS         | usec  | 12 MB/s           | 237 KB/s      | 2759   |
+| 4KB HTTPS         | usc   | 12 MB/s           | 237 KB/s      | 2759   |
 | 4KB mTLS          | use2b | 74 MB/s           | 1.5 MB/s      | 17723  |
 | 4KB mTLS          | usc   | 11 MB/s           | 245 KB/s      | 2711   |
 
@@ -68,7 +68,7 @@
 # on the use2 server
 $ iperf3 -s -p 50051
 
-# on use2b client
+# on the use2b client
 $ iperf3 -c sokoide-use2.eastus2.cloudapp.azure.com -p 50051
 Connecting to host sokoide-use2.eastus2.cloudapp.azure.com, port 50051
 [  5] local 10.0.0.5 port 46658 connected to 68.154.120.178 port 50051
@@ -90,7 +90,7 @@ Connecting to host sokoide-use2.eastus2.cloudapp.azure.com, port 50051
 
 iperf Done.
 
-# on usc client
+# on the usc client
 $ iperf3 -c sokoide-use2.eastus2.cloudapp.azure.com -p 50051
 Connecting to host sokoide-use2.eastus2.cloudapp.azure.com, port 50051
 [  5] local 10.0.0.4 port 43662 connected to 68.154.120.178 port 50051
@@ -118,11 +118,11 @@ iperf Done.
 * used <https://github.com/sokoide/grpc> -> `Push`
 
 ```bash
-# server on use2
+# on the use2 server
 $ ./server
 2025/03/30 03:42:27 server listening at [::]:50051
 
-# client on use2b or usc
+# on the use2b or usc client
 $ ./client -addr sokoide-use2.eastus2.cloudapp.azure.com:50051 -gos 1000
 2025/03/30 03:36:32 Greeting: Hello defaultName
 2025/03/30 03:36:33 Push: 351 ms
