@@ -39,8 +39,8 @@
 | 4KB x 2000    | usc   | 1300ms |
 | 4KB x 4000    | use2b | 1520ms |
 | 4KB x 4000    | usc   | 2300ms |
-| 1MB x 100     | use2b | 9.1s   |
-| 1MB x 100     | usc   | 10.3   |
+| 1MB x 100     | use2b | 8.5 s  |
+| 1MB x 100     | usc   | 10.9 s |
 | 1MB x 200     | use2b | 18.1s  |
 | 1MB x 200     | usc   | 23.7s  |
 | 1MB x 400     | use2b | 36.7s  |
